@@ -110,6 +110,16 @@ button:disabled {
     font-size: 1.2em;
 }
 
+#currentSelection {
+    min-height: 68px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.8em;
+}
+
 .action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;

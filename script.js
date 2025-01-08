@@ -1,14 +1,19 @@
 const game = {
     gridSize: 9,
-    currentPlayer: 'red',
+    currentPlayer: 'blue',
     selectedCells: [],
     grid: [],
     timeLeft: 120,
     timer: null,
     currentExpression: [],
     numberUsage: {
-        red: { 1: 5, 2: 5, 3: 5, 4: 5, 5: 5, 6: 5, 7: 5, 8: 5, 9: 5 },
-        blue: { 1: 5, 2: 5, 3: 5, 4: 5, 5: 5, 6: 5, 7: 5, 8: 5, 9: 5 }
+        saved: {
+            red: { 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6, 7: 6, 8: 6, 9: 6 },
+            blue: { 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6, 7: 6, 8: 6, 9: 6 }
+        },
+        current: {
+            1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0
+        }
     },
     scores: { red: 0, blue: 0 },
 
@@ -17,6 +22,7 @@ const game = {
         this.setupEventListeners();
         this.startTimer();
         this.updateDisplay();
+        this.switchPlayer();
     },
 
     updateDisplay() {
@@ -55,7 +61,8 @@ const game = {
                 const num = parseInt(btn.dataset.number);
                 if (this.canUseNumber(num)) {
                     this.currentExpression.push(num.toString());
-                    this.numberUsage[this.currentPlayer][num]--;
+                    this.numberUsage.current[num]++;
+                    console.log(this.numberUsage)
                     this.updateEquationDisplay();
                     this.updateNumberButtons();
                 }
@@ -96,6 +103,7 @@ const game = {
                 }
             }
         }
+        document.querySelector("#currentSelection").innerHTML = this.selectedCells.map(index => this.grid[index]).join("");
     },
     
     isAdjacentToLastSelected(index) {
@@ -126,7 +134,9 @@ const game = {
         const directions = [
             [0, -1], // Left
             [0, 1],  // Right
-            ...(this.currentPlayer === 'red' ? [[-1, 0]] : [[1, 0]]) // Down for red, Up for blue
+            // ...(this.currentPlayer === 'red' ? [[-1, 0]] : [[1, 0]]) // Down for red, Up for blue
+            [1, 0],
+            [-1, 0]
         ];
     
         return directions.some(([dr, dc]) => {
@@ -183,7 +193,7 @@ const game = {
     },
 
     canUseNumber(num) {
-        return this.numberUsage[this.currentPlayer][num] > 0;
+        return this.numberUsage["saved"][this.currentPlayer][num] - this.numberUsage["current"][num] > 0;
     },
 
     updateEquationDisplay() {
@@ -194,8 +204,8 @@ const game = {
     updateNumberButtons() {
         document.querySelectorAll('[data-number]').forEach(btn => {
             const num = parseInt(btn.dataset.number);
-            btn.querySelector('span').textContent = this.numberUsage[this.currentPlayer][num];
-            btn.disabled = this.numberUsage[this.currentPlayer][num] === 0;
+            btn.querySelector('span').textContent = this.numberUsage.saved[this.currentPlayer][num] - this.numberUsage.current[num];
+            btn.disabled = this.numberUsage.saved[this.currentPlayer][num] - this.numberUsage.current[num] === 0;
         });
     },
 
@@ -204,6 +214,10 @@ const game = {
             alert('Invalid equation!');
             return;
         }
+        console.log(this.numberUsage.saved[this.currentPlayer])
+        Object.entries(this.numberUsage.saved[this.currentPlayer]).forEach((e, i) => {
+            this.numberUsage.saved[this.currentPlayer][i] -= this.numberUsage.current[i]
+        })
         this.captureSelectedCells();
         this.switchPlayer();
         this.resetTurn();
@@ -265,7 +279,16 @@ const game = {
         this.currentPlayer = this.currentPlayer === 'red' ? 'blue' : 'red';
         document.getElementById('currentPlayer').textContent = 
             this.currentPlayer.charAt(0).toUpperCase() + this.currentPlayer.slice(1);
+        this.resetTurn()
         this.resetTimer();
+        Object.entries(this.numberUsage.saved[this.currentPlayer]).forEach((e, i) => {
+            this.numberUsage.saved[this.currentPlayer][i]++
+            if (this.numberUsage.saved[this.currentPlayer][i] > 6) {
+                this.numberUsage.saved[this.currentPlayer][i] = 6;
+            }
+        })
+        console.log(this.numberUsage.saved)
+        document.querySelector("body").style.backgroundColor = this.currentPlayer == 'red' ? "rgb(224, 101, 101)" : "rgb(101, 140, 224)"
     },
 
     startTimer() {
@@ -299,8 +322,8 @@ const game = {
     },
 
     resetNumberUsage() {
-        this.numberUsage[this.currentPlayer] = {
-            1: 5, 2: 5, 3: 5, 4: 5, 5: 5, 6: 5, 7: 5, 8: 5, 9: 5
+        this.numberUsage.current = {
+            1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0
         };
         this.updateNumberButtons();
     },
@@ -310,6 +333,10 @@ const game = {
             document.querySelector(`[data-index="${index}"]`).classList.remove('selected');
         });
         this.selectedCells = [];
+        document.querySelector("#currentSelection").innerHTML = this.selectedCells.map(index => this.grid[index]).join("");
+        this.numberUsage.current = {
+            1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0
+        } // reset selection
     },
 
     checkWinCondition() {
