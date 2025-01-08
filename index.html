@@ -1,0 +1,56 @@
+<!-- filepath: /index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Wars</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>Number Wars</h1>
+            <div class="game-info">
+                <div class="player-turn">Current Turn: <span id="currentPlayer">Red</span></div>
+                <div class="scores">
+                    <div class="score-red">Red: <span id="redScore">0</span></div>
+                    <div class="score-blue">Blue: <span id="blueScore">0</span></div>
+                </div>
+                <div class="timer">Time: <span id="timeLeft">120</span>s</div>
+            </div>
+
+            <div class="controls">
+                <div class="numbers">
+                    <button data-number="1">1 (<span>2</span>)</button>
+                    <button data-number="2">2 (<span>2</span>)</button>
+                    <button data-number="3">3 (<span>2</span>)</button>
+                    <button data-number="4">4 (<span>2</span>)</button>
+                    <button data-number="5">5 (<span>2</span>)</button>
+                    <button data-number="6">6 (<span>2</span>)</button>
+                    <button data-number="7">7 (<span>2</span>)</button>
+                    <button data-number="8">8 (<span>2</span>)</button>
+                    <button data-number="9">9 (<span>2</span>)</button>
+                </div>
+                <div class="operators">
+                    <button>+</button>
+                    <button>-</button>
+                    <button>×</button>
+                    <button>÷</button>
+                </div>
+                <div class="equation-area">
+                    <div id="currentEquation"></div>
+                    <div class="action-buttons">
+                        <button id="submit">Submit</button>
+                        <button id="clear">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div id="gameGrid" class="grid"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
