@@ -1,3 +1,4 @@
+
 const game = {
     gridSize: 9,
     currentPlayer: 'blue',
@@ -356,3 +357,4 @@ const game = {
 };
 
 window.onload = () => game.init();
+
