@@ -4,6 +4,32 @@
     box-sizing: border-box;
 }
 
+.navbar {
+    width: 100%;
+    background-color: #fff;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: black;
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+    background-color: #d9d9d9;
+}
+
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f5f5f5;
@@ -183,4 +209,12 @@ button:disabled {
 
 .tutorial-link:hover {
     background-color: #45a049;
+}
+
+/* black cells */
+
+.cell.black-cell {
+    background-color: #d9d9d9;  /* Opposite of #ffa800 */
+    pointer-events: none;
+    cursor: not-allowed;
 }
