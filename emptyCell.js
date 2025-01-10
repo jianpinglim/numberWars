@@ -1,7 +1,7 @@
 
 const game = {
     gridSize: 9,
-    blackCellCount: 10, // Number of black cells to spawn
+    blackCellCount: 20, // Number of black cells to spawn
     currentPlayer: 'blue',
     selectedCells: [],
     grid: [],
