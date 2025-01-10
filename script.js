@@ -165,32 +165,50 @@ const game = {
         }
     
         // For red player - can only expand downward
-        if (this.currentPlayer === 'red') {
-            const directions = [[-1, 0], [0,-1], [0,1]]; // Down, Left, Right
-            return directions.some(([dr, dc]) => {
-                const newRow = row + dr;
-                const newCol = col + dc;
-                if (newRow >= 0 && newRow < this.gridSize && newCol >= 0 && newCol < this.gridSize) {
-                    const cell = document.querySelector(`[data-index="${newRow * this.gridSize + newCol}"]`);
-                    return cell?.classList.contains(this.currentPlayer);
-                }
-                return false;
-            });
-        }
+        // if (this.currentPlayer === 'red') {
+        //     const directions = [[-1, 0], [0,-1], [0,1]]; // Down, Left, Right
+        //     return directions.some(([dr, dc]) => {
+        //         const newRow = row + dr;
+        //         const newCol = col + dc;
+        //         if (newRow >= 0 && newRow < this.gridSize && newCol >= 0 && newCol < this.gridSize) {
+        //             const cell = document.querySelector(`[data-index="${newRow * this.gridSize + newCol}"]`);
+        //             return cell?.classList.contains(this.currentPlayer);
+        //         }
+        //         return false;
+        //     });
+        // }
         
-        // For blue player - can only expand upward
-        if (this.currentPlayer === 'blue') {
-            const directions = [[1,0], [0,-1], [0,1]]; // Up, Left, Right
-            return directions.some(([dr, dc]) => {
-                const newRow = row + dr;
-                const newCol = col + dc;
-                if (newRow >= 0 && newRow < this.gridSize && newCol >= 0 && newCol < this.gridSize) {
-                    const cell = document.querySelector(`[data-index="${newRow * this.gridSize + newCol}"]`);
-                    return cell?.classList.contains(this.currentPlayer);
-                }
-                return false;
-            });
-        }
+        // // For blue player - can only expand upward
+        // if (this.currentPlayer === 'blue') {
+        //     const directions = [[1,0], [0,-1], [0,1]]; // Up, Left, Right
+        //     return directions.some(([dr, dc]) => {
+        //         const newRow = row + dr;
+        //         const newCol = col + dc;
+        //         if (newRow >= 0 && newRow < this.gridSize && newCol >= 0 && newCol < this.gridSize) {
+        //             const cell = document.querySelector(`[data-index="${newRow * this.gridSize + newCol}"]`);
+        //             return cell?.classList.contains(this.currentPlayer);
+        //         }
+        //         return false;
+        //     });
+        // }
+
+        const directions = [
+            [0, -1], // Left
+            [0, 1],  // Right
+            // ...(this.currentPlayer === 'red' ? [[-1, 0]] : [[1, 0]]) // Down for red, Up for blue
+            [1, 0],
+            [-1, 0]
+        ];
+
+        return directions.some(([dr, dc]) => {
+            const newRow = row + dr;
+            const newCol = col + dc;
+            if (newRow >= 0 && newRow < this.gridSize && newCol >= 0 && newCol < this.gridSize) {
+                const cell = document.querySelector(`[data-index="${newRow * this.gridSize + newCol}"]`);
+                return cell?.classList.contains(this.currentPlayer);
+            }
+            return false;
+        });
     },
 
     canUseNumber(num) {
