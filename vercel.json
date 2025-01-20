@@ -1,0 +1,16 @@
+{
+    "version": 2,
+    "builds": [
+        { "src": "public/**/*", "use": "@vercel/static" }
+    ],
+    "routes": [
+        { 
+            "src": "/(.*)",
+            "dest": "/public/$1"
+        }
+    ],
+    "env": {
+        "NEXT_PUBLIC_SUPABASE_URL": "https://fdedumturuxtmjddxmtg.supabase.co",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY": "your-actual-anon-key"
+    }
+}
