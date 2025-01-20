@@ -48,7 +48,7 @@ const multiplayer = {
                     { 
                         event: '*', 
                         schema: 'public', 
-                        table: 'rooms' 
+                        table: 'game_rooms' 
                     },
                     (payload) => {
                         if (payload.new && payload.new.id === this.roomId) {
@@ -65,6 +65,57 @@ const multiplayer = {
         } catch (error) {
             console.error('Connection error:', error);
             alert('Failed to connect. Please try again.');
+        }
+    },
+
+    updateFromGameState(state) {
+        if (!state) return;
+        
+        this.grid = state.grid;
+        this.currentPlayer = state.currentPlayer;
+        this.scores = state.scores;
+        this.timeLeft = state.timeLeft;
+        this.numberUsage = state.numberUsage;
+
+        // Update captured cells
+        document.querySelectorAll('.cell').forEach(cell => {
+            const index = parseInt(cell.dataset.index);
+            cell.classList.remove('captured-red', 'captured-blue', 'selected');
+            if (state.capturedCells?.red?.includes(index)) {
+                cell.classList.add('captured-red');
+            }
+            if (state.capturedCells?.blue?.includes(index)) {
+                cell.classList.add('captured-blue');
+            }
+        });
+
+        this.updateDisplay();
+    },
+
+    async saveStateToSupabase() {
+        try {
+            const { error } = await supabase
+                .from('game_rooms')
+                .update({
+                    state: {
+                        grid: this.grid,
+                        currentPlayer: this.currentPlayer,
+                        scores: this.scores,
+                        timeLeft: this.timeLeft,
+                        numberUsage: this.numberUsage,
+                        capturedCells: {
+                            red: Array.from(document.querySelectorAll('.captured-red'))
+                                .map(cell => parseInt(cell.dataset.index)),
+                            blue: Array.from(document.querySelectorAll('.captured-blue'))
+                                .map(cell => parseInt(cell.dataset.index))
+                        }
+                    }
+                })
+                .eq('id', this.roomId);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Failed to save state:', error);
         }
     },
 
@@ -421,13 +472,11 @@ const multiplayer = {
             alert('Invalid equation!');
             return;
         }
-        console.log(this.numberUsage.saved[this.currentPlayer])
-        Object.entries(this.numberUsage.saved[this.currentPlayer]).forEach((e, i) => {
-            this.numberUsage.saved[this.currentPlayer][i] -= this.numberUsage.current[i]
-        })
+
         this.captureSelectedCells();
         this.switchPlayer();
         this.resetTurn();
+        this.saveStateToSupabase(); // Sync state after move
     },
 
     validateEquation() {
@@ -475,11 +524,10 @@ const multiplayer = {
         this.selectedCells.forEach(index => {
             const cell = document.querySelector(`[data-index="${index}"]`);
             cell.classList.remove('selected');
-            cell.classList.add(this.currentPlayer);
+            cell.classList.add(`captured-${this.playerColor}`);
         });
-        this.scores[this.currentPlayer] += this.selectedCells.length;
-        this.updateScores();
-        this.checkWinCondition();
+        this.scores[this.playerColor] += this.selectedCells.length;
+        this.updateDisplay();
     },
 
     canUseNumber(num) {
