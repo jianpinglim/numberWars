@@ -1,6 +1,6 @@
 import { io } from '/socket.io/socket.io.esm.min.js';
 
-const socket = io();
+const socket = io('https://numberwars.onrender.com');
 
 const game = {
     gridSize: 9,

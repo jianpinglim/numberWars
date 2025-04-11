@@ -5,8 +5,12 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
-
+const io = new Server(httpServer, {
+    cors: {
+        origin: 'https://your-vercel-app.vercel.app', // Replace with your Vercel app URL
+        methods: ['GET', 'POST']
+    }
+});
 // Serve static files
 app.use(express.static(path.join(__dirname, '../client')));
 app.get('/', (req, res) => {
