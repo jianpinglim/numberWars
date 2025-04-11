@@ -1,5 +1,4 @@
-import { io } from '/socket.io/socket.io.esm.min.js';
-
+import { io } from 'https://cdn.jsdelivr.net/npm/socket.io-client@4.7.5/+esm';
 const socket = io('https://numberwars.onrender.com');
 
 const game = {

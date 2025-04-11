@@ -5,9 +5,9 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(httpServer, {
+const io = new Server(server, {
     cors: {
-        origin: 'https://your-vercel-app.vercel.app', // Replace with your Vercel app URL
+        origin: 'https://numberwars.vercel.app', // Replace with your Vercel app URL
         methods: ['GET', 'POST']
     }
 });
