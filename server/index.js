@@ -7,7 +7,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'https://numberwars.vercel.app', // Replace with your Vercel app URL
+        origin: process.env.NODE_ENV === 'production' 
+            ? 'https://numberwars.vercel.app'  // Production URL only
+            : '*',  // Allow any origin in development
         methods: ['GET', 'POST']
     }
 });
@@ -32,7 +34,7 @@ io.on('connection', (socket) => {
         rooms[roomCode] = {
             players: [socket.id],
             gameState: {
-                grid: Array(81).fill().map(() => Math.floor(Math.random() * 10)),
+                grid: Array(81).fill().map(() => Math.floor(Math.random() * 10)), // 0-9
                 currentPlayer: 'red',
                 scores: { red: 0, blue: 0 },
                 numberUsage: {

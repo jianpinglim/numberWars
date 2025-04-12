@@ -1,6 +1,7 @@
 import { io } from 'https://cdn.jsdelivr.net/npm/socket.io-client@4.7.5/+esm';
-const socket = io('https://numberwars.onrender.com');
-
+const socket = io(window.location.hostname === 'localhost' ?
+    'http://localhost:3000' :
+    'https://numberwars.onrender.com');
 const game = {
     gridSize: 9,
     currentPlayer: 'red',
@@ -211,11 +212,13 @@ const game = {
         document.getElementById('redScore').textContent = this.scores.red;
         document.getElementById('blueScore').textContent = this.scores.blue;
         document.getElementById('currentEquation').textContent = this.currentExpression.join(' ');
-        // Fix currentSelection to always show cell values correctly
+        // Fix currentSelection to properly handle zeros
         document.getElementById('currentSelection').textContent = this.selectedCells.map(index => {
             const cell = this.grid[index];
-            // Handle both object (post-capture) and number (pre-capture) cases
-            return cell && typeof cell === 'object' && 'value' in cell ? cell.value : (cell || '');
+            // Handle both object (post-capture) and number (pre-capture) cases, including zeros
+            return cell && typeof cell === 'object' && 'value' in cell
+                ? (cell.value.toString())
+                : (cell !== undefined ? cell.toString() : '');
         }).join('');
         this.updateNumberButtons();
     },
@@ -233,8 +236,10 @@ const game = {
         this.grid.forEach((cell, i) => {
             const div = document.createElement('div');
             div.className = 'cell';
-            // Consistently display cell value, whether it's a number or an object
-            div.textContent = typeof cell === 'object' && 'value' in cell ? cell.value : cell;
+            // Fix to show zero correctly
+            div.textContent = typeof cell === 'object' && 'value' in cell 
+                ? cell.value.toString() 
+                : (cell !== undefined ? cell.toString() : '');
             div.dataset.index = i;
             if (this.selectedCells.includes(i)) div.classList.add('selected');
             if (cell && typeof cell === 'object' && cell.owner) div.classList.add(cell.owner);
